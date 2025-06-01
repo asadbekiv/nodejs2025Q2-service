@@ -6,7 +6,7 @@ import {
   Post,
   Put,
   Delete,
-  ParseUUIDPipe,
+  ParseUUIDPipe, HttpCode,
 } from '@nestjs/common';
 import { TracksService } from './tracks.service';
 import { CreateTrackDto } from './dto/create-track.dto';
@@ -37,7 +37,7 @@ export class TracksController {
   ) {
     return await this.tracksService.updateTrack(id, updateTrackDto);
   }
-
+  @HttpCode(204)
   @Delete(':id')
   async delete(@Param('id', new ParseUUIDPipe()) id: string) {
     return await this.tracksService.deleteTrack(id);
