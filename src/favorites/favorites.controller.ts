@@ -6,7 +6,7 @@ import {
   Delete,
   Get,
   Post,
-  ParseUUIDPipe,
+  ParseUUIDPipe, HttpCode,
 } from '@nestjs/common';
 import { FavoritesService } from './favorites.service';
 
@@ -23,28 +23,28 @@ export class FavoritesController {
   async addTrack(@Param('id', new ParseUUIDPipe()) id: string) {
     return await this.favoritesService.addTrackToFav(id);
   }
-
+  @HttpCode(204)
   @Delete('/track/:id')
   async deleteTrack(@Param('id', new ParseUUIDPipe()) id: string) {
     return await this.favoritesService.deleteTrackFromFav(id);
   }
 
-  @Post('/track/:id')
+  @Post('/album/:id')
   async addAlbum(@Param('id', new ParseUUIDPipe()) id: string) {
     return await this.favoritesService.addAlbumToFav(id);
   }
-
-  @Delete('/track/:id')
+  @HttpCode(204)
+  @Delete('/album/:id')
   async deleteAlbum(@Param('id', new ParseUUIDPipe()) id: string) {
     return await this.favoritesService.deleteAlbumFromFav(id);
   }
 
-  @Post('/track/:id')
+  @Post('/artist/:id')
   async addArtist(@Param('id', new ParseUUIDPipe()) id: string) {
     return await this.favoritesService.addArtistToFav(id);
   }
-
-  @Delete('/track/:id')
+@HttpCode(204)
+  @Delete('/artist/:id')
   async deleteArtist(@Param('id', new ParseUUIDPipe()) id: string) {
     return await this.favoritesService.deleteArtistFromFav(id);
   }
