@@ -4,16 +4,22 @@ import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
 import { v4 as uuidv4 } from 'uuid';
 import { plainToClass } from 'class-transformer';
+import { TracksService } from '../tracks/tracks.service';
+import { Track } from '../tracks/track.entity';
 
 @Injectable()
 export class AlbumsService {
+  constructor(private readonly tracksService: TracksService) {
+  }
+
+
   private albums: Album[] = [];
 
-  async getAll() {
+  async getAll():Promise<Album[]> {
     return await this.albums;
   }
 
-  async getAlbumById(albumId: string) {
+  async getAlbumById(albumId: string):Promise<Album> {
     const album: Album = await this.albums.find((e) => e.id == albumId);
     if (!album) {
       throw new NotFoundException(`Album with ID ${albumId} not found`);
@@ -53,5 +59,12 @@ export class AlbumsService {
       throw new NotFoundException(`Album with ID ${album} not found`);
     }
     this.albums.splice(album, 1);
+
+    let tracks:Track[] =await this.tracksService.getAll();
+    for (let track of tracks) {
+
+      track.albumId=null
+
+    }
   }
 }

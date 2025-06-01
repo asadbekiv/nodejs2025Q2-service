@@ -21,12 +21,13 @@ export class AlbumsController {
   async findAll() {
     return await this.albumsService.getAll();
   }
-
   @Get(':id')
   async findOne(@Param('id', new ParseUUIDPipe()) id: string) {
+    console.log(id);
     return await this.albumsService.getAlbumById(id);
   }
 
+  @HttpCode(201)
   @Post()
   async create(@Body() createAlbumDto: CreateAlbumDto) {
     return await this.albumsService.createAlbum(createAlbumDto);
