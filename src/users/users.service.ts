@@ -4,7 +4,7 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
-import { User } from './user.entity';
+import { User } from './entities/user.entity';
 import { plainToClass } from 'class-transformer';
 
 @Injectable()

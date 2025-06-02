@@ -1,22 +1,19 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Artist } from './artist.entity';
+import { Artist } from './entities/artist.entity';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { plainToClass } from 'class-transformer';
 import { v4 as uuidv4 } from 'uuid';
 import { UpdateArtistDto } from './dto/update-artist.dto';
 import { AlbumsService } from '../albums/albums.service';
-import { Album } from '../albums/album.entity';
+import { Album } from '../albums/entities/album.entity';
 import { TracksService } from '../tracks/tracks.service';
-import { Track } from '../tracks/track.entity';
-import { FavoritesResponse } from '../favorites/favorite.entity';
-import { FavoritesService } from '../favorites/favorites.service';
+import { Track } from '../tracks/entities/track.entity';
 
 @Injectable()
 export class ArtistsService {
   constructor(
     private readonly albumsService: AlbumsService,
     private readonly tracksService: TracksService,
-    private readonly favoritesService: FavoritesService,
   ) {}
 
   private artists: Artist[] = [];
@@ -67,9 +64,6 @@ export class ArtistsService {
     this.artists.splice(artist, 1);
     const albums: Album[] = await this.albumsService.getAll();
     const tracks: Track[] = await this.tracksService.getAll();
-    const favorites: FavoritesResponse = await this.favoritesService.getAll();
-    //
-    console.log(favorites);
 
     for (const album of albums) {
       album.artistId = null;
