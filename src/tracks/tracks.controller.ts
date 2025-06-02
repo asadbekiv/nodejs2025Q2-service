@@ -6,7 +6,8 @@ import {
   Post,
   Put,
   Delete,
-  ParseUUIDPipe, HttpCode,
+  ParseUUIDPipe,
+  HttpCode,
 } from '@nestjs/common';
 import { TracksService } from './tracks.service';
 import { CreateTrackDto } from './dto/create-track.dto';

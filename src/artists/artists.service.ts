@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException,Inject,forwardRef } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Artist } from './artist.entity';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { plainToClass } from 'class-transformer';
@@ -13,8 +13,11 @@ import { FavoritesService } from '../favorites/favorites.service';
 
 @Injectable()
 export class ArtistsService {
-  constructor( private readonly albumsService:AlbumsService,private readonly tracksService:TracksService,private readonly favoritesService:FavoritesService) {
-  }
+  constructor(
+    private readonly albumsService: AlbumsService,
+    private readonly tracksService: TracksService,
+    private readonly favoritesService: FavoritesService,
+  ) {}
 
   private artists: Artist[] = [];
 
@@ -55,24 +58,24 @@ export class ArtistsService {
   }
 
   async deleteArtist(artistId: string) {
-    const artist:number = this.artists.findIndex((artist:Artist):boolean => artist.id === artistId);
+    const artist: number = this.artists.findIndex(
+      (artist: Artist): boolean => artist.id === artistId,
+    );
     if (artist === -1) {
       throw new NotFoundException(`Artist with ID ${artistId} not found`);
     }
     this.artists.splice(artist, 1);
-    let albums:Album[]=await this.albumsService.getAll()
-    let tracks:Track[] =await this.tracksService.getAll();
-    let favorites:FavoritesResponse=await this.favoritesService.getAll();
+    const albums: Album[] = await this.albumsService.getAll();
+    const tracks: Track[] = await this.tracksService.getAll();
+    const favorites: FavoritesResponse = await this.favoritesService.getAll();
     //
     console.log(favorites);
 
-
     for (const album of albums) {
-      album.artistId = null
+      album.artistId = null;
     }
     for (const track of tracks) {
       track.artistId = null;
-
     }
   }
 }

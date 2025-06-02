@@ -9,17 +9,15 @@ import { Track } from '../tracks/track.entity';
 
 @Injectable()
 export class AlbumsService {
-  constructor(private readonly tracksService: TracksService) {
-  }
-
+  constructor(private readonly tracksService: TracksService) {}
 
   private albums: Album[] = [];
 
-  async getAll():Promise<Album[]> {
+  async getAll(): Promise<Album[]> {
     return await this.albums;
   }
 
-  async getAlbumById(albumId: string):Promise<Album> {
+  async getAlbumById(albumId: string): Promise<Album> {
     const album: Album = await this.albums.find((e) => e.id == albumId);
     if (!album) {
       throw new NotFoundException(`Album with ID ${albumId} not found`);
@@ -60,11 +58,9 @@ export class AlbumsService {
     }
     this.albums.splice(album, 1);
 
-    let tracks:Track[] =await this.tracksService.getAll();
-    for (let track of tracks) {
-
-      track.albumId=null
-
+    const tracks: Track[] = await this.tracksService.getAll();
+    for (const track of tracks) {
+      track.albumId = null;
     }
   }
 }

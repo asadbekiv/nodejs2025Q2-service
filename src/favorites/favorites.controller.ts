@@ -1,12 +1,11 @@
 import {
   Controller,
-  Body,
   Param,
-  Put,
   Delete,
   Get,
   Post,
-  ParseUUIDPipe, HttpCode,
+  ParseUUIDPipe,
+  HttpCode,
 } from '@nestjs/common';
 import { FavoritesService } from './favorites.service';
 
@@ -43,7 +42,7 @@ export class FavoritesController {
   async addArtist(@Param('id', new ParseUUIDPipe()) id: string) {
     return await this.favoritesService.addArtistToFav(id);
   }
-@HttpCode(204)
+  @HttpCode(204)
   @Delete('/artist/:id')
   async deleteArtist(@Param('id', new ParseUUIDPipe()) id: string) {
     return await this.favoritesService.deleteArtistFromFav(id);
