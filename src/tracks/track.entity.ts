@@ -1,35 +1,33 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { Album } from 'src/albums/album.entity';
+import { Artist } from 'src/artists/artist.entity';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+
+@Entity({ name: 'tracks' })
 export class Track {
-  @ApiProperty({
-    example: 'a3e1b9c3-2f2a-4d9c-8c3b-8a3b1c3d2f2a',
-    description: 'Unique identifier for the track (UUID v4)',
-  })
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ApiProperty({
-    example: 'Bohemian Rhapsody',
-    description: 'Name of the track',
-  })
+  @Column()
   name: string;
 
-  @ApiProperty({
-    example: 'd7b5f3c5-2e4a-4b9d-8f3b-8b3d5c3d7e8a',
-    description:
-      'Unique 476a0a6d-0861-496d-8692-2df1b4216269identifier of the artist, refers to Artist entity',
-    nullable: true,
-  })
+  @ManyToOne(() => Artist, { nullable: true, eager: true })
+  @JoinColumn({ name: 'artistId' })
   artistId: string | null;
 
-  @ApiProperty({
-    example: 'e7b5f3c5-2e4a-4b9d-8f3b-8b3d5c3d7e8c',
-    description: 'Unique identifier of the album, refers to Album entity',
-    nullable: true,
-  })
+  @ManyToOne(() => Album, { nullable: true, eager: true })
+  @JoinColumn({ name: 'albumId' })
   albumId: string | null;
 
-  @ApiProperty({
-    example: 354,
-    description: 'Duration of the track in seconds',
-  })
+  @Column()
   duration: number;
+
+  constructor(partial: Partial<Track>) {
+    Object.assign(this, partial);
+  }
 }
