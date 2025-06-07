@@ -5,25 +5,30 @@ import {
 } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { User } from './user.entity';
-import { plainToClass } from 'class-transformer';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class UsersService {
-  private users: User[] = [];
 
-  getAllUsers(): User[] {
-    return this.users;
+  constructor(
+    @InjectRepository(User) private usersRepository: Repository<User>,
+  ) {}
+
+  async getAllUsers(): Promise<User[]> {
+    const users = await this.usersRepository.find();
+    return users;
   }
 
   async getUserById(id: string) {
-    const user = await this.users.find((user) => user.id == id);
+    const user = await this.usersRepository.findOneBy({ id });
     if (!user) {
       throw new NotFoundException(`User with ID ${id} not found`);
     }
     return user;
   }
 
-  async createUser(login: string, password: string) {
+  async createUser(login: string, password: string): Promise<User> {
     const newUser: User = {
       id: uuidv4(),
       login: login,
@@ -32,19 +37,19 @@ export class UsersService {
       createdAt: Date.now(),
       updatedAt: Date.now(),
     };
-    this.users.push(newUser);
+    await this.usersRepository.save(newUser);
 
-    return plainToClass(User, newUser);
+    return newUser;
   }
 
-  updatePassword(
-    userId: string,
+  async updatePassword(
+    id: string,
     oldPassword: string,
     newPassword: string,
-  ): User {
-    const user = this.users.find((user) => user.id === userId);
+  ): Promise<User> {
+    const user = await this.usersRepository.findOneBy({ id });
     if (!user) {
-      throw new NotFoundException(`User with ID ${userId} not found`);
+      throw new NotFoundException(`User with ID ${id} not found`);
     }
 
     if (user.password !== oldPassword) {
@@ -56,14 +61,14 @@ export class UsersService {
     user.version += 1;
     user.updatedAt = Date.now();
 
-    return plainToClass(User, user);
+    return await this.usersRepository.save(user);
   }
 
-  delete(userId: string): void {
-    const user = this.users.findIndex((user) => user.id === userId);
-    if (user === -1) {
-      throw new NotFoundException(`User with ID ${userId} not found`);
+  async delete(id: string): Promise<void> {
+    const user = await this.usersRepository.findOneBy({ id });
+    if (!user) {
+      throw new NotFoundException(`User with ID ${id} not found`);
     }
-    this.users.splice(user, 1);
+    await this.usersRepository.remove(user);
   }
 }
