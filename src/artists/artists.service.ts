@@ -4,78 +4,77 @@ import { CreateArtistDto } from './dto/create-artist.dto';
 import { plainToClass } from 'class-transformer';
 import { v4 as uuidv4 } from 'uuid';
 import { UpdateArtistDto } from './dto/update-artist.dto';
-import { AlbumsService } from '../albums/albums.service';
 import { Album } from '../albums/album.entity';
-import { TracksService } from '../tracks/tracks.service';
 import { Track } from '../tracks/track.entity';
-import { FavoritesResponse } from '../favorites/favorite.entity';
-import { FavoritesService } from '../favorites/favorites.service';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class ArtistsService {
   constructor(
-    private readonly albumsService: AlbumsService,
-    private readonly tracksService: TracksService,
-    private readonly favoritesService: FavoritesService,
+    @InjectRepository(Artist)
+    private readonly artistsRepository: Repository<Artist>,
+    @InjectRepository(Album)
+    private readonly albumsRepository: Repository<Album>,
+    @InjectRepository(Track)
+    private readonly tracksRepository: Repository<Track>,
   ) {}
 
-  private artists: Artist[] = [];
-
-  async getAll() {
-    return this.artists;
+  async getAll(): Promise<Artist[]> {
+    const artists = await this.artistsRepository.find();
+    return artists;
   }
 
-  async getArtistById(artistId: string) {
-    const artist: Artist = await this.artists.find((e) => e.id == artistId);
+  async getArtistById(id: string): Promise<Artist> {
+    const artist = await this.artistsRepository.findOneBy({ id });
     if (!artist) {
-      throw new NotFoundException(`Artist with ID ${artistId} not found`);
+      throw new NotFoundException(`Artist with ID ${id} not found`);
     }
     return artist;
   }
 
-  async createArtist(createArtistDto: CreateArtistDto) {
+  async createArtist(createArtistDto: CreateArtistDto): Promise<Artist> {
     const { name, grammy } = createArtistDto;
     const newArtist = {
       id: uuidv4(),
       name: name,
       grammy: grammy,
     };
-    this.artists.push(newArtist);
+    await this.artistsRepository.save(newArtist);
 
-    return plainToClass(Artist, newArtist);
+    return newArtist;
   }
 
-  async updateArtist(artistId: string, updateArtistDto: UpdateArtistDto) {
-    const artist: Artist = await this.artists.find((e) => e.id == artistId);
+  async updateArtist(
+    id: string,
+    updateArtistDto: UpdateArtistDto,
+  ): Promise<Artist> {
+    const artist: Artist = await this.artistsRepository.findOneBy({ id });
     if (!artist) {
-      throw new NotFoundException(`Artist with ID ${artistId} not found`);
+      throw new NotFoundException(`Artist with ID ${id} not found`);
     }
 
     artist.name = updateArtistDto.name;
     artist.grammy = updateArtistDto.grammy;
 
-    return artist;
+    return await this.artistsRepository.save(artist);
   }
 
-  async deleteArtist(artistId: string) {
-    const artist: number = this.artists.findIndex(
-      (artist: Artist): boolean => artist.id === artistId,
-    );
-    if (artist === -1) {
-      throw new NotFoundException(`Artist with ID ${artistId} not found`);
+  async deleteArtist(id: string) {
+    const artist: Artist = await this.artistsRepository.findOneBy({ id });
+    if (!artist) {
+      throw new NotFoundException(`Artist with ID ${id} not found`);
     }
-    this.artists.splice(artist, 1);
-    const albums: Album[] = await this.albumsService.getAll();
-    const tracks: Track[] = await this.tracksService.getAll();
-    const favorites: FavoritesResponse = await this.favoritesService.getAll();
-    //
-    console.log(favorites);
+    await this.artistsRepository.remove(artist);
 
-    for (const album of albums) {
-      album.artistId = null;
-    }
-    for (const track of tracks) {
-      track.artistId = null;
-    }
+    // const albums: Album[] = await this.albumsService.getAll();
+    // const tracks: Track[] = await this.tracksService.getAll();
+
+    // for (const album of albums) {
+    //   album.artistId = null;
+    // }
+    // for (const track of tracks) {
+    //   track.artistId = null;
+    // }
   }
 }
