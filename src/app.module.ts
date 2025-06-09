@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { Module } from '@nestjs/common';
 import { FavoritesModule } from './favorites/favorites.module';
 import { TracksModule } from './tracks/tracks.module';
@@ -11,7 +12,6 @@ import { Artist } from './artists/artist.entity';
 import { Album } from './albums/album.entity';
 import { Track } from './tracks/track.entity';
 import { FavoritesResponse } from './favorites/favorite.entity';
-import 'dotenv/config';
 
 @Module({
   imports: [
