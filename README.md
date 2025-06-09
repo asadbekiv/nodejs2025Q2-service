@@ -68,7 +68,7 @@ Advanced Scope
 ```
 
 ---
-#### Only 2 tests arern't passed.I will be happy I you share your solutions for not passed 2 tests.
+#### Only 2 tests arern't passed.I will be happy If you share your solutions for not passed 2 tests.
 #### You can access OpenAPi documenation via `http://localhost:4000/api`
 ![Screenshot from 2025-06-09 09-14-01](https://github.com/user-attachments/assets/65128610-0334-4379-997a-5ed95cd818be)
 
