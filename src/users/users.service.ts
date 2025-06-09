@@ -7,17 +7,17 @@ import { v4 as uuidv4 } from 'uuid';
 import { User } from './user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class UsersService {
-
   constructor(
     @InjectRepository(User) private usersRepository: Repository<User>,
   ) {}
 
   async getAllUsers(): Promise<User[]> {
     const users = await this.usersRepository.find();
-    return users;
+    return plainToInstance(User, users);
   }
 
   async getUserById(id: string) {
@@ -25,7 +25,7 @@ export class UsersService {
     if (!user) {
       throw new NotFoundException(`User with ID ${id} not found`);
     }
-    return user;
+    return plainToInstance(User, user);
   }
 
   async createUser(login: string, password: string): Promise<User> {
@@ -39,7 +39,7 @@ export class UsersService {
     };
     await this.usersRepository.save(newUser);
 
-    return newUser;
+    return plainToInstance(User, await this.usersRepository.save(newUser));
   }
 
   async updatePassword(
@@ -61,7 +61,7 @@ export class UsersService {
     user.version += 1;
     user.updatedAt = Date.now();
 
-    return await this.usersRepository.save(user);
+    return plainToInstance(User,await this.usersRepository.save(user));
   }
 
   async delete(id: string): Promise<void> {

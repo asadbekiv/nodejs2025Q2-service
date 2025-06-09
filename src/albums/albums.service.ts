@@ -6,12 +6,17 @@ import { v4 as uuidv4 } from 'uuid';
 import { Track } from '../tracks/track.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { FavoritesResponse } from 'src/favorites/favorite.entity';
 
 @Injectable()
 export class AlbumsService {
   constructor(
     @InjectRepository(Album)
     private readonly albumsRepository: Repository<Album>,
+    @InjectRepository(Track)
+    private readonly tracksRepository: Repository<Track>,
+    @InjectRepository(FavoritesResponse)
+    private readonly favsRepository: Repository<FavoritesResponse>,
   ) {}
 
   async getAll(): Promise<Album[]> {
@@ -24,7 +29,12 @@ export class AlbumsService {
     if (!album) {
       throw new NotFoundException(`Album with ID ${id} not found`);
     }
-    return album;
+    return {
+      id: id,
+      name: album.name,
+      year: album.year,
+      artistId: album.artistId,
+    };
   }
 
   async createAlbum(createAlbumDto: CreateAlbumDto): Promise<Album> {
@@ -44,7 +54,7 @@ export class AlbumsService {
     id: string,
     updateAlbumDto: UpdateAlbumDto,
   ): Promise<Album> {
-    const album: Album = await this.albumsRepository.findOneBy({ id });
+    let album: Album = await this.albumsRepository.findOneBy({ id });
     if (!album) {
       throw new NotFoundException(`Album with ID ${id} not found`);
     }
@@ -53,21 +63,19 @@ export class AlbumsService {
     album.year = updateAlbumDto.year;
     album.artistId = updateAlbumDto.artistId;
 
-    await this.albumsRepository.save(album);
+    const updatedAlbum = await this.albumsRepository.save(album);
 
-    return album;
+    return updatedAlbum;
   }
 
   async deleteAlbum(id: string): Promise<void> {
-    const album: Album = await this.albumsRepository.findOneBy({ id });
+    let album: Album = await this.albumsRepository.findOneBy({ id });
     if (!album) {
       throw new NotFoundException(`Album with ID ${id} not found`);
     }
-    await this.albumsRepository.remove(album);
 
-    // const tracks: Track[] = await this.tracksService.getAll();
-    // for (const track of tracks) {
-    //   track.albumId = null;
-    // }
+    await this.favsRepository.delete({ id: album.id });
+    await this.tracksRepository.update({ albumId: id }, { albumId: null });
+    await this.albumsRepository.remove(album);
   }
 }

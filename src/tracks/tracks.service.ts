@@ -55,19 +55,18 @@ export class TracksService {
       throw new NotFoundException(`Track with ID ${id} not found`);
     }
 
-    // track.name = updateTrackDto.name;
-    // track.artistId = updateTrackDto.artistId;
-    // track.albumId = updateTrackDto.albumId;
-    // track.duration = updateTrackDto.duration;
-
     return await this.tracksRepository.save(track);
   }
 
   async deleteTrack(id: string): Promise<void> {
-    const track = await this.tracksRepository.findOneBy({ id });
+    let track = await this.tracksRepository.findOneBy({ id });
     if (!track) {
       throw new NotFoundException(`Track with ID ${id} not found`);
     }
+    track.artistId = null;
+    track.albumId = null;
     await this.tracksRepository.remove(track);
+
+   
   }
 }

@@ -10,8 +10,8 @@ import { User } from './users/user.entity';
 import { Artist } from './artists/artist.entity';
 import { Album } from './albums/album.entity';
 import { Track } from './tracks/track.entity';
-import 'dotenv/config';
 import { FavoritesResponse } from './favorites/favorite.entity';
+import 'dotenv/config';
 
 @Module({
   imports: [
@@ -19,7 +19,7 @@ import { FavoritesResponse } from './favorites/favorite.entity';
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.DATABASE_HOST,
-      port: Number(process.env.PORT_POSTGRES),
+      port: parseInt(process.env.DB_PORT, 10) || 5432,
       username: process.env.DATABASE_USERNAME,
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_NAME,

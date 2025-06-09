@@ -23,7 +23,6 @@ export class AlbumsController {
   }
   @Get(':id')
   async findOne(@Param('id', new ParseUUIDPipe()) id: string) {
-    console.log(id);
     return await this.albumsService.getAlbumById(id);
   }
 

@@ -10,4 +10,5 @@ export class Artist {
 
   @Column()
   grammy: boolean;
+  
 }
