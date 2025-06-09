@@ -2,7 +2,7 @@
 2. Done 10.06.2025 / Deadline 10.06.2025
 3. [Cross-Check:Review](https://github.com/AlreadyBored/nodejs-assignments/blob/main/assignments/containerization-database-orm/score.md).
 4. [My Solutions Link](https://github.com/asadbekiv/nodejs2025Q2-service)
-5. Self-assessment score: `340/360`
+5. Self-assessment score: `300/360`
 
 > Please use ! `feature/docker-database` branch for cross-checking
 After switching to `feature/docker-database` branch create .env file  or remove `.example`  part in the `.env.example` file.Set following values in .env
@@ -42,7 +42,7 @@ $ docker compose up --build
 # shut down docker containers
 $ docker compose down
 ```
-```
+
 1) Containerization, Docker
 - [x] +20 Readme.md has instruction how to run application
 - [x] +30 user-defined bridge is created and configured
@@ -57,7 +57,7 @@ $ docker compose down
 - [x] +20 Favorites data is stored in PostgreSQL database and typeorm / prisma interacts with the database to manipulate data
 Advanced Scope
 1) Containerization, Docker
-- [ ] +20 Final size of the Docker image with application is less than 500 MB
+- [X] +20 Final size of the Docker image with application is less than 500 MB
 - [ ] +10 Implemented npm script for vulnerabilities scanning (free solution)
 - [x] +20 Your built image is pushed to DockerHub
 2) Database & ORM
@@ -65,7 +65,6 @@ Advanced Scope
 - [x] +10 Variables used for connection to database to be stored in .env
 - [x] +10 typeorm [decorators](https://typeorm.io/#/relations) or prisma relations create relations between entities
 - [x] +30 Local PostgreSQL installation is not required for task check, connection is implemented to database stored in docker container (on the basis of the previous task)
-```
 
 ---
 #### Only 2 tests arern't passed.I will be happy If you share your solutions for not passed 2 tests.
