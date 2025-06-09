@@ -54,7 +54,7 @@ export class AlbumsService {
     id: string,
     updateAlbumDto: UpdateAlbumDto,
   ): Promise<Album> {
-    let album: Album = await this.albumsRepository.findOneBy({ id });
+    const album: Album = await this.albumsRepository.findOneBy({ id });
     if (!album) {
       throw new NotFoundException(`Album with ID ${id} not found`);
     }
@@ -69,7 +69,7 @@ export class AlbumsService {
   }
 
   async deleteAlbum(id: string): Promise<void> {
-    let album: Album = await this.albumsRepository.findOneBy({ id });
+    const album: Album = await this.albumsRepository.findOneBy({ id });
     if (!album) {
       throw new NotFoundException(`Album with ID ${id} not found`);
     }

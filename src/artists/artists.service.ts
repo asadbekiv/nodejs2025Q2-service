@@ -1,7 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Artist } from './artist.entity';
 import { CreateArtistDto } from './dto/create-artist.dto';
-import { plainToClass } from 'class-transformer';
 import { v4 as uuidv4 } from 'uuid';
 import { UpdateArtistDto } from './dto/update-artist.dto';
 import { Album } from '../albums/album.entity';
@@ -72,7 +71,6 @@ export class ArtistsService {
     await this.favsRepository.delete({ id: artist.id });
     await this.albumsRepository.update({ artistId: id }, { artistId: null });
     await this.tracksRepository.update({ artistId: id }, { artistId: null });
-
     await this.artistsRepository.remove(artist);
   }
 }

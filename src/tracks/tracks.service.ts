@@ -3,7 +3,6 @@ import { Track } from './track.entity';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
 import { v4 as uuidv4 } from 'uuid';
-import { plainToClass } from 'class-transformer';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -59,14 +58,12 @@ export class TracksService {
   }
 
   async deleteTrack(id: string): Promise<void> {
-    let track = await this.tracksRepository.findOneBy({ id });
+    const track = await this.tracksRepository.findOneBy({ id });
     if (!track) {
       throw new NotFoundException(`Track with ID ${id} not found`);
     }
     track.artistId = null;
     track.albumId = null;
     await this.tracksRepository.remove(track);
-
-   
   }
 }

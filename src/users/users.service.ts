@@ -61,7 +61,7 @@ export class UsersService {
     user.version += 1;
     user.updatedAt = Date.now();
 
-    return plainToInstance(User,await this.usersRepository.save(user));
+    return plainToInstance(User, await this.usersRepository.save(user));
   }
 
   async delete(id: string): Promise<void> {
