@@ -21,7 +21,7 @@ async function bootstrap() {
   }
   const swaggerDocument = yaml.load(file);
 
-  SwaggerModule.setup('api', app, swaggerDocument as OpenAPIObject);
+  SwaggerModule.setup('doc/api', app, swaggerDocument as OpenAPIObject);
 
   await app.listen(4000);
 }
