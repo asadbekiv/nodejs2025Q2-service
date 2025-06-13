@@ -12,6 +12,7 @@ import { Artist } from './artists/artist.entity';
 import { Album } from './albums/album.entity';
 import { Track } from './tracks/track.entity';
 import { FavoritesResponse } from './favorites/favorite.entity';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -19,7 +20,7 @@ import { FavoritesResponse } from './favorites/favorite.entity';
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.DATABASE_HOST,
-      port: parseInt(process.env.DB_PORT, 10) || 5432,
+      port: parseInt(process.env.PORT_POSTGRES, 10) || 5432,
       username: process.env.DATABASE_USERNAME,
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_NAME,
@@ -31,6 +32,7 @@ import { FavoritesResponse } from './favorites/favorite.entity';
     ArtistsModule,
     UsersModule,
     AlbumsModule,
+    AuthModule,
   ],
 })
 export class AppModule {}

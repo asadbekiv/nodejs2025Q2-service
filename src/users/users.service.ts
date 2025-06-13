@@ -8,12 +8,27 @@ import { User } from './user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { plainToInstance } from 'class-transformer';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User) private usersRepository: Repository<User>,
   ) {}
+
+  async findByLoginAndPassword(login: string, password: string) {
+    const user = await this.usersRepository.findOne({
+      where: { login: login.trim() },
+    });
+    if (!user) {
+      return null;
+    }
+    const isVaildPassword: boolean = await bcrypt.compare(
+      password,
+      user.password,
+    );
+    return isVaildPassword ? user : null;
+  }
 
   async getAllUsers(): Promise<User[]> {
     const users = await this.usersRepository.find();
