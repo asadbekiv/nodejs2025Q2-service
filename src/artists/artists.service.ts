@@ -1,7 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Artist } from './artist.entity';
 import { CreateArtistDto } from './dto/create-artist.dto';
-import { v4 as uuidv4 } from 'uuid';
 import { UpdateArtistDto } from './dto/update-artist.dto';
 import { Album } from '../albums/album.entity';
 import { Track } from '../tracks/track.entity';
@@ -36,15 +35,9 @@ export class ArtistsService {
   }
 
   async createArtist(createArtistDto: CreateArtistDto): Promise<Artist> {
-    const { name, grammy } = createArtistDto;
-    const newArtist = {
-      id: uuidv4(),
-      name: name,
-      grammy: grammy,
-    };
-    await this.artistsRepository.save(newArtist);
-
-    return newArtist;
+    const artist = this.artistsRepository.create(createArtistDto); // creates an entity instance
+    const savedArtist = await this.artistsRepository.save(artist); // persists to the database
+    return savedArtist;
   }
 
   async updateArtist(

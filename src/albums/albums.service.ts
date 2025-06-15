@@ -29,25 +29,20 @@ export class AlbumsService {
     if (!album) {
       throw new NotFoundException(`Album with ID ${id} not found`);
     }
-    return {
-      id: id,
-      name: album.name,
-      year: album.year,
-      artistId: album.artistId,
-    };
+    return album;
   }
 
   async createAlbum(createAlbumDto: CreateAlbumDto): Promise<Album> {
-    const newAlbum = {
+    const newAlbum = new Album({
       id: uuidv4(),
       name: createAlbumDto.name,
       year: createAlbumDto.year,
       artistId: createAlbumDto.artistId,
-    };
+    });
 
-    await this.albumsRepository.save(newAlbum);
+    const createdAlbum = await this.albumsRepository.save(newAlbum);
 
-    return newAlbum;
+    return createdAlbum;
   }
 
   async updateAlbum(

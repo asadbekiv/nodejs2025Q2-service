@@ -18,6 +18,7 @@ export class FavoritesController {
     return await this.favoritesService.getAll();
   }
 
+  @HttpCode(201)
   @Post('/track/:id')
   async addTrack(@Param('id', new ParseUUIDPipe()) id: string) {
     return await this.favoritesService.addTrackToFav(id);
@@ -28,6 +29,7 @@ export class FavoritesController {
     return await this.favoritesService.deleteTrackFromFav(id);
   }
 
+  @HttpCode(201)
   @Post('/album/:id')
   async addAlbum(@Param('id', new ParseUUIDPipe()) id: string) {
     return await this.favoritesService.addAlbumToFav(id);
@@ -38,6 +40,7 @@ export class FavoritesController {
     return await this.favoritesService.deleteAlbumFromFav(id);
   }
 
+  @HttpCode(201)
   @Post('/artist/:id')
   async addArtist(@Param('id', new ParseUUIDPipe()) id: string) {
     return await this.favoritesService.addArtistToFav(id);

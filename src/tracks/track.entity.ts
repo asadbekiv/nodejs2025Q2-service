@@ -16,12 +16,24 @@ export class Track {
   @Column()
   name: string;
 
-  @ManyToOne(() => Artist, { nullable: true, eager: true })
+  @ManyToOne(() => Artist, (artist) => artist.tracks, {
+    nullable: true,
+    onDelete: 'SET NULL',
+  })
   @JoinColumn({ name: 'artistId' })
+  artist: Artist;
+
+  @Column({ type: 'uuid', nullable: true, default: null })
   artistId: string | null;
 
-  @ManyToOne(() => Album, { nullable: true, eager: true })
+  @ManyToOne(() => Album, (album) => album.tracks, {
+    nullable: true,
+    onDelete: 'SET NULL',
+  })
   @JoinColumn({ name: 'albumId' })
+  album: Album;
+
+  @Column({ type: 'uuid', nullable: true, default: null })
   albumId: string | null;
 
   @Column()

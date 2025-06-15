@@ -13,6 +13,10 @@ import { Album } from './albums/album.entity';
 import { Track } from './tracks/track.entity';
 import { FavoritesResponse } from './favorites/favorite.entity';
 import { AuthModule } from './auth/auth.module';
+import { AuthGuard } from './auth/auth.guard';
+import { APP_GUARD } from '@nestjs/core';
+
+
 
 @Module({
   imports: [
@@ -33,6 +37,12 @@ import { AuthModule } from './auth/auth.module';
     UsersModule,
     AlbumsModule,
     AuthModule,
+  ],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
   ],
 })
 export class AppModule {}
