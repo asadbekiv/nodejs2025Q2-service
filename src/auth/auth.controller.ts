@@ -16,19 +16,19 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   @HttpCode(HttpStatus.OK)
-  // @Public()
+  @Public()
   @Post('login')
   signIn(@Body() signinDto: SigninDto) {
     // this.loggingService.log(`Log in ${body.login}`,'Auth');
+
     return this.authService.signIn(signinDto);
   }
 
   @HttpCode(HttpStatus.CREATED)
-  // @Public()
+  @Public()
   @Post('signup')
   signUp(@Body() signupDto: SignupDto) {
     // this.loggingService.log(`Sign up ${body.login}`,'Auth');
-    console.log(signupDto);
     return this.authService.signUp(signupDto);
   }
 

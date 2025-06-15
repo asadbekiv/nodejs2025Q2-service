@@ -8,7 +8,6 @@ import { UsersService } from '../users/users.service';
 import { SignupDto } from './dto/signup.dto';
 import { SigninDto } from './dto/signin.dto';
 import { User } from '../users/user.entity';
-import * as process from 'node:process';
 
 @Injectable()
 export class AuthService {
@@ -17,17 +16,18 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async signIn(body: SigninDto): Promise<any> {
+  async signIn(signinDto: SigninDto): Promise<any> {
     const user: User = await this.usersService.findByLoginAndPassword(
-      body.login,
-      body.password,
+      signinDto.login,
+      signinDto.password,
     );
+
     if (!user) {
-      throw new UnauthorizedException('Invalid credentials');
+      throw new ForbiddenException('Invalid credentials');
     }
     const payload = { userId: user.id, login: user.login };
-    const accessToken:string = this.jwtService.sign(payload);
-    const refreshToken:string = this.jwtService.sign(payload, {
+    const accessToken: string = this.jwtService.sign(payload);
+    const refreshToken: string = this.jwtService.sign(payload, {
       secret: process.env.JWT_SECRET_REFRESH_KEY,
       expiresIn: process.env.TOKEN_REFRESH_EXPIRE_TIME,
     });
@@ -47,10 +47,10 @@ export class AuthService {
       const payload = this.jwtService.verify(refreshToken, {
         secret: process.env.JWT_SECRET_REFRESH_KEY,
       });
-      console.log('Payload', payload);
+
       const newPayload = { userId: payload.userId, login: payload.login };
 
-      const accessToken = this.jwtService.sign(newPayload,{
+      const accessToken = this.jwtService.sign(newPayload, {
         secret: process.env.JWT_SECRET_KEY,
         expiresIn: process.env.TOKEN_EXPIRE_TIME,
       });
@@ -61,7 +61,7 @@ export class AuthService {
 
       return { accessToken, refreshToken: newRefreshToken };
     } catch {
-      throw new ForbiddenException('Invalid or expired refresh token');;
+      throw new ForbiddenException('Invalid or expired refresh token');
     }
   }
 }
