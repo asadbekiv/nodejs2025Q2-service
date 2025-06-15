@@ -5,10 +5,15 @@ import { SwaggerModule, OpenAPIObject } from '@nestjs/swagger';
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 import * as yaml from 'js-yaml';
+import { Request, Response, NextFunction } from 'express';
+import { LoggerService } from './logger/logger.service';
+import { AllExceptionsFilter } from './filter/all-exceptions.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe());
+  const loggerService = app.get(LoggerService);
+  app.useGlobalFilters(new AllExceptionsFilter(loggerService));
 
   const apiYamlPath = path.join(process.cwd(), 'doc/api.yaml');
 
@@ -23,6 +28,26 @@ async function bootstrap() {
 
   SwaggerModule.setup('doc/api', app, swaggerDocument as OpenAPIObject);
 
-  await app.listen(4000);
+  await app.listen(process.env.PORT);
+
+  app.use((req: Request, res: Response, next: NextFunction) => {
+    const { method, originalUrl, query, body } = req;
+
+    res.on('finish', () => {
+      const { statusCode } = res;
+      loggerService.log(
+        `${method} ${originalUrl} ${JSON.stringify(query)} ${JSON.stringify(body)} - ${statusCode}`,
+      );
+    });
+    next();
+  });
+
+  process.on('uncaughtException', (error) => {
+    loggerService.error(`Uncaught Exception: ${error.message}`, error.stack);
+  });
+
+  process.on('unhandledRejection', (promise, reason) => {
+    loggerService.error(`Unhandled Rejection at: ${promise} reason: ${reason}`);
+  });
 }
 bootstrap();

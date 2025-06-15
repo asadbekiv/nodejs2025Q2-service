@@ -15,8 +15,7 @@ import { FavoritesResponse } from './favorites/favorite.entity';
 import { AuthModule } from './auth/auth.module';
 import { AuthGuard } from './auth/auth.guard';
 import { APP_GUARD } from '@nestjs/core';
-
-
+import { LoggerModule } from './logger/logger.module';
 
 @Module({
   imports: [
@@ -37,6 +36,7 @@ import { APP_GUARD } from '@nestjs/core';
     UsersModule,
     AlbumsModule,
     AuthModule,
+    LoggerModule,
   ],
   providers: [
     {
