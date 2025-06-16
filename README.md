@@ -46,7 +46,7 @@ $ npm install
 $ npm run start:dev
 
 # run all test cases(67 tests)
-$ npm run test
+$ npm run test:auth
 
 # build docker containers(create)
 $ docker compose up --build
